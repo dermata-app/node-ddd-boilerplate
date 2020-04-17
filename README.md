@@ -1,6 +1,8 @@
 # Node DDD Boilerplate
 > RESTful api with Domain Driven Design
 
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/joshuaalpuerto/node-ddd-boilerplate.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/joshuaalpuerto/node-ddd-boilerplate/alerts/)
+[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/joshuaalpuerto/node-ddd-boilerplate.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/joshuaalpuerto/node-ddd-boilerplate/context:javascript)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 ![Travis CI](https://travis-ci.org/joshuaalpuerto/node-ddd-boilerplate.svg?branch=master)
@@ -9,6 +11,36 @@
 ![Dev Dependecies](https://david-dm.org/joshuaalpuerto/node-ddd-boilerplate/dev-status.svg)
 [![Coverage Status](https://coveralls.io/repos/github/joshuaalpuerto/node-ddd-boilerplate/badge.svg?branch=master)](https://coveralls.io/github/joshuaalpuerto/node-ddd-boilerplate?branch=master)
 
+## Development Environment Setup
+
+1.  Make sure you have `nvm`, node `v12.8.0` or `LTS` version of node installed
+2.  Install `yarn` - `npm install -g yarn`.
+3.  Use a smart `.npmrc`. By default, `npm` doesn’t save installed dependencies to package.json (and you should always track your dependencies!).
+
+### NOTE:
+If you encounter installation issues with `bcrypt` you need to install [node-gyp](https://github.com/nodejs/node-gyp) first.
+If you update your node version to latest and you encountered compatibility issues:
+1. Ensure that there is no `pm2` runnign `pm2 list` (if there is kill the process)
+2. You have to rebuild your bcrypt running this command `npm rebuild bcrypt --update-binary`
+
+## Docker support
+
+**Prerequisites**
+1. [Docker](https://www.docker.com/products/docker-engine) Community Edition v17 or higher
+
+```sh
+$ docker-compose up -d
+```
+Access `http://localhost:<PORT>/api/<VERSION>` and you're ready to go!
+> http://localhost:4000/api/v1
+
+### Docker CLI
+- `yarn docker:db:reset` - reset and run all migrations and seeders.
+- `yarn docker:db:refresh` - reset and run all migrations.
+- `yarn docker:db:refresh-test` - reset and run all migrations for test
+- `yarn docker:test` - refreshes test database and run unit and black-box testing.
+
+*...will add more*
 
 ## Quick Start
 
@@ -60,15 +92,18 @@ $ CREATE DATABASE node_ddd_test;
 
 ## CLI Tools
 
-- `yarn start` - start the Node-DDD API Boilerplate locally
+- `yarn start` - start the Node-DDD API Boilerplate for production
+- `yarn start:dev` - start the Node-DDD API Boilerplate locally/development
+- `yarn start:cc` - start `codecrumbs` will give you quick overview the structure of the project
 - `yarn test` - run Unit tests
-- `yarn db:refresh` - run all migrations and seeds.
-- `standard` - lint codebase using JavaScript Standard Style
-- `standard --fix` - fix code according to JS Standard Style
-- `sequelize model:create --name newmodel` --attributes "id:integer, title:string - create a new model
-- `sequelize db:migrate` - apply db changes using migration script
+- `yarn db:reset` - run all migrations and seeds.
+- `yarn db:refresh` - run all migrations.
+- `yarn lint` - lint codebase using JavaScript Standard Style
+- `yarn lint:fix` - fix code according to JS Standard Style
+- `yarn migrate` - apply db changes using migration script
 - `yarn add <package-name>` - add a new package to package.json
 - `yarn remove <package-name>` - remove package from package.json
+- `npx sequelize model:create --name newmodel` --attributes "id:integer, title:string - create a new model
 
 ## Using Sequelize
 
@@ -97,6 +132,8 @@ $ sequelize  db:seed:undo:all       Deletes data from the database.
 $ sequelize model:create --name modelname --attributes "text:text, url:string"  # create model
 $ sequelize seed:create     # create seeder
 ```
+
+> If you did not install your sequelize-cli globally you can run this commands by `npx`
 
 #### Setting up associations — migration and model files
 **IMPORTANT**: as of `6/23/17` the model file created with the `sequelize db:model` command still initializes a model with an empty `classMethods` object with an `associate` property in the options passed to `sequelize.define` method. **You cannot define associations this way anymore as of Sequelize v4.0.0-1.** This tripped me up for a hot second because the generated model file did not reflect this change, and the fact that support for the old way had been removed is seemingly buried in the changelogs. Don’t make the same mistake I did and be super confused for too long about why associations aren’t working.
@@ -136,6 +173,7 @@ For reference, see: [https://github.com/sequelize/cli](https://github.com/sequel
 - [Express](https://expressjs.com/) - Node Framweork
 - [Awilix](https://github.com/jeffijoe/awilix) - dependency resolution support powered by `Proxy`
 - [PM2](https://github.com/Unitech/pm2) - production process manager for Node.js applications with a built-in load balancer
+- [Nodemon](https://nodemon.io/) - Use for development file reload.
 - [Tcomb](https://github.com/gcanti/tcomb) - s a library for Node.js and the browser which allows you to check the types of JavaScript values at runtime with a simple and concise syntax
 - [Express-status-monitor](https://github.com/RafalWilinski/express-status-monitor) - Simple, self-hosted module based on Socket.io and Chart.js to report realtime server metrics for Express-based node servers.
 - [CORS](https://github.com/expressjs/cors) - a node.js package for providing a Connect/Express middleware that can be used to enable CORS with various options.

@@ -1,31 +1,21 @@
 /* eslint-env mocha */
-const { compose } = require('ramda')
-const { models, repository } = require('test/factory')
-const userRepository = require('src/infra/repositories/user')
-const companyRepository = require('src/infra/repositories/company')
+const {
+  userRepository,
+  companyRepository
+} = app.resolve('repository')
 
-describe('Routes: GET Users', () => {
+describe('Routes: GET Companies', () => {
   const BASE_URI = `/api/${config.version}`
-
-  const UserUseCase = compose(
-    repository(userRepository),
-    models
-  )('users')
-
-  const CompanyUseCase = compose(
-    repository(companyRepository),
-    models
-  )('companies')
 
   const signIn = app.resolve('jwt').signin()
   let token
 
   beforeEach((done) => {
     // we need to add user before we can request our token
-    UserUseCase
-      .destroy({where: {}})
+    userRepository
+      .destroy({ where: {} })
       .then(() =>
-        UserUseCase.create({
+        userRepository.create({
           firstName: 'Test',
           lastName: 'Dev',
           middleName: 'Super Dev',
@@ -49,10 +39,10 @@ describe('Routes: GET Users', () => {
 
   describe('Should return companies', () => {
     beforeEach((done) => {
-      CompanyUseCase
-        .destroy({where: {}})
+      companyRepository
+        .destroy({ where: {} })
         .then(() =>
-          CompanyUseCase.create({
+          companyRepository.create({
             'name': 'My Company Test',
             'address': '1705 German Hollow',
             'contact': '658.412.5787',
@@ -68,21 +58,21 @@ describe('Routes: GET Users', () => {
 
     it('should return all companies', (done) => {
       request.get(`${BASE_URI}/companies`)
-      .set('Authorization', `JWT ${token}`)
-      .expect(200)
-      .end((err, res) => {
-        expect(res.body.data).to.have.length(1)
-        done(err)
-      })
+        .set('Authorization', `JWT ${token}`)
+        .expect(200)
+        .end((err, res) => {
+          expect(res.body.data).to.have.length(1)
+          done(err)
+        })
     })
 
     it('should return unauthorized if no token', (done) => {
       request.get(`${BASE_URI}/companies`)
-      .expect(401)
-      .end((err, res) => {
-        expect(res.text).to.equals('Unauthorized')
-        done(err)
-      })
+        .expect(401)
+        .end((err, res) => {
+          expect(res.text).to.equals('Unauthorized')
+          done(err)
+        })
     })
   })
 })

@@ -1,15 +1,10 @@
 /* eslint-env mocha */
-const { compose } = require('ramda')
-const { models, repository } = require('test/factory')
-const userRepository = require('src/infra/repositories/user')
+const {
+  userRepository
+} = app.resolve('repository')
 
 describe('Routes: DELETE Users', () => {
   const BASE_URI = `/api/${config.version}`
-
-  const UserUseCase = compose(
-    repository(userRepository),
-    models
-  )('users')
 
   const signIn = app.resolve('jwt').signin()
   let token
@@ -17,10 +12,10 @@ describe('Routes: DELETE Users', () => {
 
   beforeEach((done) => {
     // we need to add user before we can request our token
-    UserUseCase
-      .destroy({where: {}})
+    userRepository
+      .destroy({ where: {} })
       .then(() =>
-        UserUseCase.create({
+        userRepository.create({
           firstName: 'Test',
           lastName: 'Dev',
           middleName: 'Super Dev',
@@ -46,22 +41,22 @@ describe('Routes: DELETE Users', () => {
   describe('Should DELETE users', () => {
     it('should delete user', (done) => {
       request.delete(`${BASE_URI}/users/${userId}`)
-      .set('Authorization', `JWT ${token}`)
-      .expect(200)
-      .end((err, res) => {
-        expect(res.body.success).to.eql(true)
+        .set('Authorization', `JWT ${token}`)
+        .expect(200)
+        .end((err, res) => {
+          expect(res.body.success).to.eql(true)
 
-        done(err)
-      })
+          done(err)
+        })
     })
 
     it('should return unauthorized if no token', (done) => {
       request.delete(`${BASE_URI}/users/${userId}`)
-      .expect(401)
-      .end((err, res) => {
-        expect(res.text).to.equals('Unauthorized')
-        done(err)
-      })
+        .expect(401)
+        .end((err, res) => {
+          expect(res.text).to.equals('Unauthorized')
+          done(err)
+        })
     })
   })
 })
